@@ -1,0 +1,29 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Backend for an app that stores info regarding daily expenses",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nived1967/Expense_Tracker_Backend.git"
+  },
+  "author": "Nived",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nived1967/Expense_Tracker_Backend/issues"
+  },
+  "homepage": "https://github.com/nived1967/Expense_Tracker_Backend#readme",
+  "dependencies": {
+    "body-parser": "^1.20.1",
+    "express": "^4.18.2",
+    "express-handlebars": "^6.0.6",
+    "mongoose": "^6.7.5",
+    "mysql": "^2.18.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}

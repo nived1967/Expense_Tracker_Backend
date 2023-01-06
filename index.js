@@ -148,6 +148,81 @@ app.post("/expense_track/expense_type/:id", (req, res) => {
   );
 });
 
+app.post("/expense_track/expense/:id", (req, res) => {
+  let exp = req.body;
+  var sql =
+    "SET @expense_id = ?;SET @expense_name= ?;SET @expense_amount = ?;SET @user_id = ?; CALL expensesAddOrEdit(@expense_id,@expense_name,@expense_amount,@user_id);";
+  mysqlConnection.query(
+    sql,
+    [exp.expense_id, exp.expense_name, exp.expense_amount,exp.user_id],
+    (err, rows, fields) => {
+      if (!err)
+        rows.forEach((element) => {
+          if (element.constructor == Array)
+          {
+            if(element[0].expense_id==0)
+            res.send("Expense already exists");
+            else
+            res.send("New Expense ID : " + element[0].expense_id);
+
+            console.log(element);
+          }
+        });
+      else console.log(err);
+    }
+  );
+});
+
+app.post("/expense_track/expected_expense/:id", (req, res) => {
+  let exp = req.body;
+  var sql =
+    "SET @expenses_id = ?;SET @expense_name= ?;SET @expected_amount = ?;SET @users_id = ?; CALL expectedExpensesAddOrEdit(@expenses_id,@expense_name,@expected_amount,@users_id);";
+  mysqlConnection.query(
+    sql,
+    [exp.expenses_id, exp.expense_name, exp.expected_amount,exp.users_id],
+    (err, rows, fields) => {
+      if (!err)
+        rows.forEach((element) => {
+          if (element.constructor == Array)
+          {
+            if(element[0].expense_id==0)
+            res.send("Expected expense already exists");
+            else
+            res.send("New Expense ID : " + element[0].expense_id);
+
+            console.log(element);
+          }
+        });
+      else console.log(err);
+    }
+  );
+});
+
+app.post("/expense_track/income/:id", (req, res) => {
+  let exp = req.body;
+  var sql =
+    "SET @income_id = ?;SET @income_name= ?;SET @income_amount = ?;SET @uid = ?; CALL incomeAddOrEdit(@income_id,@income_name,@income_amount,@uid);";
+  mysqlConnection.query(
+    sql,
+    [exp.income_id, exp.income_name, exp.income_amount,exp.uid],
+    (err, rows, fields) => {
+      if (!err)
+        rows.forEach((element) => {
+          if (element.constructor == Array)
+          {
+            if(element[0].income_id==0)
+            res.send("Income already exists");
+            else
+            res.send("New Income ID : " + element[0].income_id);
+
+            console.log(element);
+          }
+        });
+      else console.log(err);
+    }
+  );
+});
+
 app.put("/expense_track", (req, res) => {
   let exp = req.body;
   var sql =
@@ -176,16 +251,58 @@ app.put("/expense_track/expense_type/:id", (req, res) => {
   );
 });
 
-app.delete("/expense_track/:id", (req, res) => {
+app.put("/expense_track/expense/:id", (req, res) => {
+  let exp = req.body;
+  var sql =
+    "SET @expense_id = ?;SET @expense_name = ?;SET @expense_amount = ?;SET @user_id = ?; CALL expensesAddOrEdit(@expense_id,@expense_name,@expense_amount,@user_id);";
   mysqlConnection.query(
-    "DELETE FROM expense WHERE user_id = ?",
-    [req.params.id],
+    sql,
+    [exp.expense_id, exp.expense_name, exp.expense_amount, exp.user_id],
     (err, rows, fields) => {
-      if (!err) res.send("User Record deleted successfully.");
+      if (!err) res.send("Expense Details Updated Successfully");
       else console.log(err);
     }
   );
 });
+
+app.put("/expense_track/expected_expense/:id", (req, res) => {
+  let exp = req.body;
+  var sql =
+    "SET @expenses_id = ?;SET @expense_name = ?;SET @expected_amount = ?;SET @users_id = ?; CALL expectedExpensesAddOrEdit(@expenses_id,@expense_name,@expected_amount,@users_id);";
+  mysqlConnection.query(
+    sql,
+    [exp.expenses_id, exp.expense_name, exp.expected_amount, exp.users_id],
+    (err, rows, fields) => {
+      if (!err) res.send("Expected expense Details Updated Successfully");
+      else console.log(err);
+    }
+  );
+});
+
+app.put("/expense_track/income/:id", (req, res) => {
+  let exp = req.body;
+  var sql =
+    "SET @income_id = ?;SET @income_name = ?;SET @income_amount = ?;SET @uid = ?; CALL incomeAddOrEdit(@income_id,@income_name,@income_amount,@uid);";
+  mysqlConnection.query(
+    sql,
+    [exp.income_id, exp.income_name, exp.income_amount, exp.uid],
+    (err, rows, fields) => {
+      if (!err) res.send("Income Details Updated Successfully");
+      else console.log(err);
+    }
+  );
+});
+
+// app.delete("/expense_track/:id", (req, res) => {
+//   mysqlConnection.query(
+//     "DELETE FROM expense WHERE user_id = ?",
+//     [req.params.id],
+//     (err, rows, fields) => {
+//       if (!err) res.send("User Record deleted successfully.");
+//       else console.log(err);
+//     }
+//   );
+// });
 
 app.delete("/expense_track/users/:id", (req, res) => {
     mysqlConnection.query(
@@ -209,3 +326,40 @@ app.delete("/expense_track/users/:id", (req, res) => {
       }
     );
   });
+
+  app.delete("/expense_track/expected_expense/:uid/:eid", (req, res) => {
+    console.log(req.params);
+    mysqlConnection.query(
+      "DELETE FROM expected_expense WHERE expenses_id = ?",
+      [req.params.eid],
+      (err, rows, fields) => {
+        if (!err) res.send("User Record deleted successfully.");
+        else console.log(err);
+      }
+    );
+  });
+
+  app.delete("/expense_track/expense/:uid/:eid", (req, res) => {
+    console.log(req.params);
+    mysqlConnection.query(
+      "DELETE FROM expense WHERE expense_id = ?",
+      [req.params.eid],
+      (err, rows, fields) => {
+        if (!err) res.send("User Record deleted successfully.");
+        else console.log(err);
+      }
+    );
+  });
+
+  app.delete("/expense_track/income/:uid/:eid", (req, res) => {
+    console.log(req.params);
+    mysqlConnection.query(
+      "DELETE FROM income WHERE income_id = ?",
+      [req.params.eid],
+      (err, rows, fields) => {
+        if (!err) res.send("User Record deleted successfully.");
+        else console.log(err);
+      }
+    );
+  });
+
